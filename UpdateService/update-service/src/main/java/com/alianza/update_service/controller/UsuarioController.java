@@ -13,6 +13,7 @@ import com.alianza.update_service.model.Usuario;
 import com.alianza.update_service.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/update")
 public class UsuarioController {

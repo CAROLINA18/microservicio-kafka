@@ -1,0 +1,71 @@
+<div>
+    <h1>Gestión de Usuarios</h1>
+    
+    <!-- Botón para crear un usuario -->
+    <button (click)="openUserModal()">Crear Usuario</button>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Roles</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.email }}</td>
+          <td>{{ user.roles }}</td>
+          <td>
+            <!-- Botón para editar un usuario -->
+            <button (click)="openUserModal(user)">Editar</button>
+            <!-- Botón para eliminar un usuario -->
+            <button (click)="deleteUser(user.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div *ngIf="isModalOpen" class="modal-overlay">
+    <div class="modal-container">
+      <h2>{{ modalTitle }}</h2>
+      <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+        <!-- Campo Email -->
+        <div>
+          <label>Email</label>
+          <input formControlName="email" type="email" />
+        </div>
+  
+        <!-- Roles Seleccionados -->
+        <div>
+          <label>Roles Asignados:</label>
+          <ul>
+            <li *ngFor="let role of selectedRoles">
+              {{ role }}
+              <button type="button" (click)="removeRole(role)">Eliminar</button>
+            </li>
+          </ul>
+        </div>
+  
+        <!-- Lista Desplegable para Agregar Roles -->
+        <div>
+          <label>Agregar Rol:</label>
+          <select [formControl]="roleControl">
+            <option *ngFor="let role of availableRoles" [value]="role">{{ role }}</option>
+          </select>
+          <button type="button" (click)="addRole()">Agregar</button>
+        </div>
+  
+        <!-- Campo Password (Solo en modo creación) -->
+        <div *ngIf="!isEditMode">
+          <label>Password</label>
+          <input formControlName="password" type="password" />
+        </div>
+  
+        <!-- Botones de Acción -->
+        <button type="submit">{{ isEditMode ? 'Actualizar' : 'Crear' }}</button>
+        <button type="button" (click)="closeModal()">Cancelar</button>
+      </form>
+    </div>
+  </div>

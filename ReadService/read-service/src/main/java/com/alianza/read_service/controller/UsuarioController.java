@@ -21,6 +21,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/users")
 public class UsuarioController {
@@ -37,7 +38,7 @@ public class UsuarioController {
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = new ObjectMapper();
     }
-
+    
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('CONSULTA_USUARIO')")
     public ResponseEntity<?> obtenerUsuarioPorId(@PathVariable Long id) {
@@ -72,6 +73,7 @@ public class UsuarioController {
             singleUserRequests.remove(requestId); // Limpieza del mapa
         }
     }
+    
 
     @GetMapping
     @PreAuthorize("hasAuthority('CONSULTA_USUARIO')")

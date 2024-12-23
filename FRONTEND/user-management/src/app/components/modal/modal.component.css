@@ -1,0 +1,9 @@
+.bg-danger {
+    background-color: #dc3545 !important;
+  }
+  .bg-success {
+    background-color: #28a745 !important;
+  }
+  .modal-title {
+    font-size: 1.25rem;
+  }

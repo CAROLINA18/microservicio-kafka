@@ -1,0 +1,10 @@
+<div class="modal">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <input formControlName="email" placeholder="Email" />
+      <input formControlName="password" type="password" placeholder="Password" />
+      <select formControlName="roles">
+        <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+      </select>
+      <button type="submit" [disabled]="userForm.invalid">Crear</button>
+    </form>
+  </div>

@@ -19,6 +19,8 @@ import java.util.stream.Stream;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,8 +39,9 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-	    http
-	        .csrf(csrf -> csrf.disable())
+		http
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configuración CORS
 	        .authorizeHttpRequests(auth -> auth
 	            .requestMatchers("/create/**").hasAuthority("CREAR_USUARIO_BD") // Requiere este rol
 	            .anyRequest().authenticated() // Cualquier otra solicitud necesita autenticación
@@ -70,6 +73,18 @@ public class WebSecurityConfig {
 	    // Retorna un JwtAuthenticationToken con el principal y las authorities
 	    return new JwtAuthenticationToken(jwt, authorities, jwt.getSubject());
 	}
+	
+    private UrlBasedCorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:4200"); // Permitir solicitudes desde Angular
+        configuration.addAllowedMethod("*"); // Permitir todos los métodos (GET, POST, PUT, DELETE, etc.)
+        configuration.addAllowedHeader("*"); // Permitir todos los encabezados
+        configuration.setAllowCredentials(true); // Permitir credenciales como cookies o headers de autorización
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Aplicar configuración a todas las rutas
+        return source;
+    }
     
     @Bean
     public PasswordEncoder passwordEncoder() {

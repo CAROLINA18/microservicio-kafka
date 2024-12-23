@@ -1,0 +1,11 @@
+<div class="modal-header" [class.bg-danger]="isError" [class.bg-success]="!isError">
+    <h4 class="modal-title text-white">{{ title }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <p>{{ message }}</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cerrar</button>
+    <button *ngIf="!isError" type="button" class="btn btn-primary" (click)="onConfirm()">Aceptar</button>
+  </div>
