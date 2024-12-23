@@ -1,0 +1,42 @@
+docker run --name openldap -p 389:389 --env LDAP_ORGANISATION="Alianza" \
+--env LDAP_DOMAIN="alianza.com.co" --env LDAP_ADMIN_PASSWORD="adminpassword" \
+--detach osixia/openldap:1.5.0
+
+
+
+http://localhost:8081/h2-console
+
+Iniciar LDAP LOCAL
+docker exec -it openldap bash
+
+CREAR CUENTAS EN LDAP
+cat <<EOF > /user2.ldif
+dn: uid=prueba@alianza.com.co,dc=alianza,dc=com,dc=co
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: prueba
+sn: Alianza
+uid: prueba
+userPassword: %AlianzaPruebaGML2024%
+EOF
+
+AGREGAR CUENTA AL DIRECTORIO
+ldapadd -x -D "cn=admin,dc=alianza,dc=com,dc=co" -w "adminpassword" -f user2.ldif
+
+INICIAR KAFKA
+.\bin\windows\kafka-server-start.bat .\config\server.properties
+
+INICIA ZOKEPER PRIMERO
+.\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+
+INICIA CADA TOPICO
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic USER_CREATION_TOPIC --from-beginning
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic USER_UPDATE_TOPIC --from-beginning
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic USER_READ_TOPIC --from-beginning
+
+
+CREA LOS TOPICOS
+kafka-topics --create --topic USER_READ_REQUEST_TOPIC --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+kafka-topics --create --topic USER_READ_RESPONSE_TOPIC --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
